@@ -1,8 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const dns = require('dns');
-const url = require('url');
 const app = express();
 
 // Basic Configuration
@@ -34,18 +32,17 @@ app.get('/api/hello', function(req, res) {
   // Validate and store URL
   app.post('/api/shorturl', function(req, res) {
     const originalUrl = req.body.url;
-    
+
     try {
-      const parsedUrl = new url.URL(originalUrl);
-      dns.lookup(parsedUrl.hostname, (err) => {
-        if (err) {
-          return res.json({ error: 'invalid url' });
-        }
-        
-        const shortUrl = global.urlCounter++;
-        global.urlDatabase[String(shortUrl)] = originalUrl;
-        res.json({ original_url: originalUrl, short_url: shortUrl });
-      });
+      const parsedUrl = new URL(originalUrl);
+
+      if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
+        return res.json({ error: 'invalid url' });
+      }
+
+      const shortUrl = global.urlCounter++;
+      global.urlDatabase[String(shortUrl)] = originalUrl;
+      res.json({ original_url: originalUrl, short_url: shortUrl });
     } catch (e) {
       res.json({ error: 'invalid url' });
     }
