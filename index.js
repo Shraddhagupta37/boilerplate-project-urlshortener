@@ -43,7 +43,7 @@ app.get('/api/hello', function(req, res) {
         }
         
         const shortUrl = global.urlCounter++;
-        global.urlDatabase[shortUrl] = originalUrl;
+        global.urlDatabase[String(shortUrl)] = originalUrl;
         res.json({ original_url: originalUrl, short_url: shortUrl });
       });
     } catch (e) {
