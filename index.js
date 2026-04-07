@@ -58,7 +58,7 @@ app.get('/api/hello', function(req, res) {
     if (originalUrl) {
       res.redirect(originalUrl);
     } else {
-      res.json({ error: 'Short URL not found' });
+      res.json({ error: 'No short URL found for the given input' });
     }
   });
 
