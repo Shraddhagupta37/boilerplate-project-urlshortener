@@ -12,6 +12,16 @@ app.use(cors());
 
 app.use('/public', express.static(`${process.cwd()}/public`));
 
+// Store URL mappings
+if (!global.urlDatabase) {
+  global.urlDatabase = {};
+  global.urlCounter = 1;
+}
+
+// Add body parser middleware
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
 app.get('/', function(req, res) {
   res.sendFile(process.cwd() + '/views/index.html');
 });
@@ -20,16 +30,6 @@ app.get('/', function(req, res) {
 app.get('/api/hello', function(req, res) {
   res.json({ greeting: 'hello API' });
 });
-
-  // Store URL mappings
-  if (!global.urlDatabase) {
-    global.urlDatabase = {};
-    global.urlCounter = 1;
-  }
-
-  // Add body parser middleware
-  app.use(express.urlencoded({ extended: false }));
-  app.use(express.json());
 
   // Validate and store URL
   app.post('/api/shorturl', function(req, res) {
