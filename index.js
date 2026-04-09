@@ -42,7 +42,7 @@ app.post('/api/shorturl', function(req, res) {
     return res.json({ error: 'invalid url' });
   }
 
-  // ✅ ONLY allow http and https
+  // ONLY allow http and https
   if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
     return res.json({ error: 'invalid url' });
   }
@@ -62,9 +62,9 @@ app.get('/api/shorturl/:short_url', function(req, res) {
   const originalUrl = urlDatabase[shortUrl];
 
   if (originalUrl) {
-    res.redirect(originalUrl);
+    return res.redirect(302, originalUrl); // explicitly set status
   } else {
-    res.json({ error: 'No short URL found for the given input' });
+    return res.json({ error: 'No short URL found for the given input' });
   }
 });
 
