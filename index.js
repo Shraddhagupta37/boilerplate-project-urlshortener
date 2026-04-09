@@ -31,8 +31,11 @@ app.get('/api/hello', function(req, res) {
 });
 
 // URL Shortener Endpoint
+const dns = require('dns');
+const { URL } = require('url');
+
 app.post('/api/shorturl', function(req, res) {
-  let originalUrl = req.body.url;
+  const originalUrl = req.body.url;
 
   let parsedUrl;
 
@@ -46,15 +49,20 @@ app.post('/api/shorturl', function(req, res) {
     return res.json({ error: 'invalid url' });
   }
 
-  // Normalize URL
-  originalUrl = parsedUrl.href;
+  const hostname = parsedUrl.hostname;
 
-  const shortUrl = urlCounter++;
-  urlDatabase[shortUrl] = originalUrl;
+  dns.lookup(hostname, (err) => {
+    if (err) {
+      return res.json({ error: 'invalid url' });
+    }
 
-  res.json({
-    original_url: originalUrl,
-    short_url: shortUrl
+    const shortUrl = urlCounter++;
+    urlDatabase[shortUrl] = parsedUrl.href;
+
+    res.json({
+      original_url: parsedUrl.href,
+      short_url: shortUrl
+    });
   });
 });
 
