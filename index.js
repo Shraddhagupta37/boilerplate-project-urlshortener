@@ -32,7 +32,7 @@ app.get('/api/hello', function(req, res) {
 
 // URL Shortener Endpoint
 app.post('/api/shorturl', function(req, res) {
-  const originalUrl = req.body.url;
+  let originalUrl = req.body.url;
 
   let parsedUrl;
 
@@ -42,10 +42,12 @@ app.post('/api/shorturl', function(req, res) {
     return res.json({ error: 'invalid url' });
   }
 
-  // ONLY allow http and https
   if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
     return res.json({ error: 'invalid url' });
   }
+
+  // Normalize URL
+  originalUrl = parsedUrl.href;
 
   const shortUrl = urlCounter++;
   urlDatabase[shortUrl] = originalUrl;
