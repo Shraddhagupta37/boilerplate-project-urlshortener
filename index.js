@@ -50,7 +50,7 @@ app.post('/api/shorturl', function(req, res) {
 
   dns.lookup(hostname, (err) => {
     if (err) {
-      return res.json({ error: 'invalid url' });
+      return res.json({ error: 'Invalid Hostname' });
     }
 
     const shortUrl = urlCounter++;
