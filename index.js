@@ -31,9 +31,6 @@ app.get('/api/hello', function(req, res) {
 });
 
 // URL Shortener Endpoint
-const dns = require('dns');
-const { URL } = require('url');
-
 app.post('/api/shorturl', function(req, res) {
   const originalUrl = req.body.url;
 
