@@ -62,11 +62,9 @@ app.get('/api/shorturl/:short_url', function(req, res) {
   const originalUrl = urlDatabase[shortUrl];
 
   if (originalUrl) {
-    res.status(302);
-    res.set('Location', originalUrl);
-    res.send(); // 🔥 important
+    return res.redirect(originalUrl);
   } else {
-    res.json({ error: 'No short URL found for the given input' });
+    return res.json({ error: 'No short URL found for the given input' });
   }
 });
 
