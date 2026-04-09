@@ -30,39 +30,29 @@ app.get('/api/hello', function(req, res) {
   res.json({ greeting: 'hello API' });
 });
 
-// ✅ URL Shortener Endpoint (FIXED)
+// URL Shortener Endpoint
 app.post('/api/shorturl', function(req, res) {
   const originalUrl = req.body.url;
 
-  let hostname;
+  let parsedUrl;
 
   try {
-    const parsedUrl = new URL(originalUrl);
-
-    // Check protocol
-    if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
-      return res.json({ error: 'invalid url' });
-    }
-
-    hostname = parsedUrl.hostname;
-
+    parsedUrl = new URL(originalUrl);
   } catch (err) {
     return res.json({ error: 'invalid url' });
   }
 
-  // ✅ DNS lookup (THIS FIXES FCC TEST #3)
-  dns.lookup(hostname, (err, address) => {
-    if (err) {
-      return res.json({ error: 'invalid url' });
-    }
+  // ✅ ONLY allow http and https
+  if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
+    return res.json({ error: 'invalid url' });
+  }
 
-    const shortUrl = urlCounter++;
-    urlDatabase[shortUrl] = originalUrl;
+  const shortUrl = urlCounter++;
+  urlDatabase[shortUrl] = originalUrl;
 
-    res.json({
-      original_url: originalUrl,
-      short_url: shortUrl
-    });
+  res.json({
+    original_url: originalUrl,
+    short_url: shortUrl
   });
 });
 
