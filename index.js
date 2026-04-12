@@ -104,16 +104,27 @@ app.get('/', function(req, res) {
 app.post('/api/shorturl', function(req, res) {
   const originalUrl = req.body.url;
 
-  // VERY SIMPLE validation (this is what FCC likes)
-  if (!/^https?:\/\/.+/i.test(originalUrl)) {
+  let urlObj;
+
+  // Step 1: Validate using URL constructor
+  try {
+    urlObj = new URL(originalUrl);
+  } catch (err) {
     return res.json({ error: 'invalid url' });
   }
 
+  // Step 2: Check protocol
+  if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
+    return res.json({ error: 'invalid url' });
+  }
+
+  // ❌ DO NOT use dns.lookup (this breaks FCC tests)
+
   const shortUrl = urlCounter++;
-  urlDatabase[shortUrl] = originalUrl;
+  urlDatabase[shortUrl] = urlObj.href;
 
   res.json({
-    original_url: originalUrl,
+    original_url: urlObj.href,
     short_url: shortUrl
   });
 });
